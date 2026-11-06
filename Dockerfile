@@ -12,7 +12,7 @@ ARG EVRIMA_VERSION
 # may point it to a wheel or another ref (docs/deploy.md, "Test the image locally").
 ARG EVRIMA_SOURCE="evrima @ git+https://github.com/michal-vojacek/evrima-framework.git@v${EVRIMA_VERSION}"
 
-RUN test -n "$EVRIMA_VERSION" || (echo "The build argument EVRIMA_VERSION is required, e.g. 0.1.0." >&2; exit 1)
+RUN test -n "$EVRIMA_VERSION" || (echo "The build argument EVRIMA_VERSION is required, e.g. 1.0.0." >&2; exit 1)
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends git \
     && rm -rf /var/lib/apt/lists/*

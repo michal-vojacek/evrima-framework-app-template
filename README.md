@@ -64,7 +64,7 @@ A website is an ordinary Python package that calls `evrima.create_app(...)`. Evr
 
 ## Using the framework
 
-- **Version.** Production always installs an exact released tag: `EVRIMA_VERSION=0.1.0` installs `v0.1.0` from GitHub. Releases follow semantic versioning; `PATCH` and `MINOR` need no change in the website, `MAJOR` does. Read the framework's [CHANGELOG](https://github.com/michal-vojacek/evrima-framework/blob/main/CHANGELOG.md) before raising the version.
+- **Version.** Production always installs an exact released tag: `EVRIMA_VERSION=1.0.0` installs `v1.0.0` from GitHub. Releases follow semantic versioning; `PATCH` and `MINOR` need no change in the website, `MAJOR` does. Read the framework's [CHANGELOG](https://github.com/michal-vojacek/evrima-framework/blob/main/CHANGELOG.md) before raising the version.
 - **Configuration.** Environment settings (`.env`, or the stack's settings on DWM) are read by Evrima and checked at startup: an invalid configuration stops the app instead of failing later. Website decisions (SEO) are passed to `create_app` as overrides.
 - **Templates.** The website's templates win over the framework's. Never override admin templates; a change to the admin belongs in the framework.
 - **Strict CSP.** No `<script>` without `src`, no `style="…"`, no `onclick=…`. JavaScript goes into `static/js/`, styles into `static/css/`. Structured data uses the `json_ld` filter (a data block, allowed).

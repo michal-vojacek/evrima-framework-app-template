@@ -31,7 +31,7 @@ DWM does not back up volumes: arrange database dumps and a copy of `media` with 
 
    | Key | Required | Example / note |
    |---|---|---|
-   | `EVRIMA_VERSION` | yes | `0.1.0` — the framework release, exact |
+   | `EVRIMA_VERSION` | yes | `1.0.0` — the framework release, exact |
    | `SECRET_KEY` | yes | 48+ random characters; changing it logs everyone out |
    | `POSTGRES_PASSWORD` | yes | random; used by `db` and in `DATABASE_URL` |
    | `SITE_HOSTS` | yes | `example.com,www.example.com` |

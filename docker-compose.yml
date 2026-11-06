@@ -12,7 +12,7 @@ x-app: &app
   build:
     context: .
     args:
-      EVRIMA_VERSION: ${EVRIMA_VERSION:?EVRIMA_VERSION is required, e.g. 0.1.0}
+      EVRIMA_VERSION: ${EVRIMA_VERSION:?EVRIMA_VERSION is required, e.g. 1.0.0}
   image: mysite:${EVRIMA_VERSION}
   environment:
     EVRIMA_ENV: production
