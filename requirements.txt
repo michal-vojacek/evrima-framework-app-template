@@ -1,0 +1,4 @@
+# The website's own libraries, pinned to exact versions (pip freeze).
+# Evrima itself is not listed: the deploy installs the version set in .env
+# (EVRIMA_VERSION), and locally requirements-dev.txt installs it editable.
+# The website has no libraries of its own yet.

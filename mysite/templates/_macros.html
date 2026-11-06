@@ -1,0 +1,17 @@
+{#- Helpers shared by the website's templates: {% from "_macros.html" import picture %} -#}
+
+{#- A <picture> with AVIF and WebP exports (static/img/<base>-<width>.<format>; originals
+    stay in src/, see README, "Images"). `widths` must list the exported widths; `sizes`
+    must describe the layout, otherwise the browser picks a variant that is too small or
+    too large. `eager`: an image visible without scrolling (not lazy-loaded). `priority`:
+    the largest element on first view, the LCP on a phone (fetchpriority="high"); at most
+    one per page. -#}
+{% macro picture(base, widths, sizes, width, height, alt, fallback=None, eager=False, priority=False, cls=None) -%}
+<picture>
+  {%- for format in ("avif", "webp") %}
+  <source type="image/{{ format }}" srcset="{% for w in widths %}{{ url_for('static', filename='img/' ~ base ~ '-' ~ w ~ '.' ~ format) }} {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}" sizes="{{ sizes }}">
+  {%- endfor %}
+  <img{% if cls %} class="{{ cls }}"{% endif %} src="{{ url_for('static', filename='img/' ~ base ~ '-' ~ (fallback or widths[-1]) ~ '.webp') }}" width="{{ width }}" height="{{ height }}"
+       {%- if priority %} fetchpriority="high"{% elif not eager %} loading="lazy"{% endif %} decoding="async" alt="{{ alt }}">
+</picture>
+{%- endmacro %}

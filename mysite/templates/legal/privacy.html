@@ -1,0 +1,50 @@
+{%- extends "evrima/legal/privacy.cs.html" -%}
+{#- The privacy policy: Evrima's skeleton (evrima.legal) with this website's parts.
+    Every .placeholder must be filled in with the client (or the sentence removed)
+    and the whole text checked by a lawyer before launch. What the template itself
+    does is already described truthfully: the form only e-mails enquiries, there is
+    one strictly necessary cookie (the session that protects the form); the
+    skeleton adds the visitor statistics paragraph while telemetry is on. Change
+    these sentences if the website changes that. -#}
+
+{% block legal_controller %}
+<p><span class="placeholder">Název firmy, IČO, sídlo, e-mail, telefon</span></p>
+{% endblock %}
+
+{% block legal_purposes %}
+<h3>Kontaktní formulář</h3>
+<ul>
+  <li><strong>Jaké údaje:</strong> jméno, telefon nebo e-mail, případně adresa vašeho webu a&nbsp;kdy se vám hodí.</li>
+  <li><strong>Proč:</strong> abychom vám odpověděli.</li>
+  <li><strong>Na jakém základě:</strong> kroky před uzavřením smlouvy, o&nbsp;které jste požádali (čl. 6 odst. 1 písm. b) GDPR).</li>
+  <li><strong>Kde údaje jsou:</strong> web je neukládá. Formulář je jen odešle e-mailem.</li>
+</ul>
+<h3>Záznamy serveru</h3>
+<p>Server při každém požadavku krátce zaznamenává technické údaje včetně IP adresy, aby šlo odhalit útok nebo chybu.</p>
+{% endblock %}
+
+{% block legal_recipients %}
+<ul>
+  <li>poskytovatel e-mailové schránky: <span class="placeholder">poskytovatel</span>,</li>
+  <li>poskytovatel serveru, na kterém web běží: <span class="placeholder">poskytovatel a oblast datového centra</span>.</li>
+</ul>
+{% endblock %}
+
+{% block legal_retention %}
+<ul>
+  <li>zprávy z&nbsp;formuláře: <span class="placeholder">doba, po kterou zprávy zůstávají v e-mailové schránce</span>,</li>
+  <li>záznamy serveru: <span class="placeholder">doba</span>.</li>
+</ul>
+{% endblock %}
+
+{#- No cookies page and no consent banner: the website has one necessary cookie only.
+    With LEGAL_PAGES = ["privacy", "cookies"] drop this block; the skeleton then
+    links the cookies page instead. -#}
+{% block legal_cookies %}
+<h2>Cookies</h2>
+<p>Web používá jen jednu nezbytnou cookie: chrání formulář před zneužitím (odeslání z&nbsp;cizího webu). Analytické ani reklamní cookies nepoužívá.</p>
+{% endblock %}
+
+{% block legal_effective %}
+<p class="fine">Platné od <span class="placeholder">datum</span>.</p>
+{% endblock %}

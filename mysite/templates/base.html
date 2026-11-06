@@ -1,0 +1,47 @@
+{#- Layout of every public page. No inline scripts or styles: Evrima's strict CSP forbids them.
+    TODO: the website's name, navigation and footer (business identification is required
+    on a business website: name, IČO, registered address). -#}
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Název webu{% endblock %}</title>
+{%- block meta %}{% endblock %}
+<link rel="canonical" href="{{ canonical_url() }}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:url" content="{{ canonical_url() }}">
+<meta property="og:title" content="{{ self.title() }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
+<script src="{{ url_for('static', filename='js/site.js') }}" defer></script>
+{#- Telemetry without cookies (evrima.telemetry); renders nothing while TELEMETRY_ENDPOINT is empty. #}
+{{ telemetry_script() }}
+{#- The consent banner's stylesheet and script; nothing while CONSENT_CATEGORIES is empty. #}
+{{ consent_head() }}
+{%- block structured_data %}{% endblock %}
+</head>
+<body>
+<a class="skip" href="#obsah">Přeskočit na obsah</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="{{ url_for('pages.home') }}">Název webu</a>
+    <a class="btn btn-primary" data-track="cta-header" href="{{ url_for('pages.home') }}#kontakt">Kontaktujte nás</a>
+  </div>
+</header>
+
+<main id="obsah">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© Název firmy · IČO 00000000 · sídlo Ulice 1, 000&nbsp;00 Obec</span>
+    <span><a href="{{ legal_url('privacy') }}">Zásady ochrany osobních údajů</a>
+      {%- if consent_settings_url() %} · <a href="{{ consent_settings_url() }}" data-evrima-consent-open>{{ site_t("consent.link") }}</a>{% endif %} · <a href="{{ url_for('evrima_seo.security_txt') }}">security.txt</a></span>
+  </div>
+</footer>
+{{ consent_banner() }}
+</body>
+</html>

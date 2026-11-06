@@ -1,0 +1,21 @@
+{%- extends "base.html" -%}
+{#- Every error without its own template (400, 405, 429, 500…). -#}
+{% block title %}Chyba {{ error.code }}{% endblock %}
+{% block meta %}<meta name="robots" content="noindex">{% endblock %}
+{% block content %}
+  <section class="section">
+    <div class="wrap">
+      {%- if error.code == 429 %}
+      <h1>Příliš mnoho pokusů</h1>
+      <p class="lead">Zkuste to prosím za chvíli znovu.</p>
+      {%- elif error.code >= 500 %}
+      <h1>Něco se pokazilo</h1>
+      <p class="lead">Chyba je na naší straně. Zkuste to prosím za chvíli znovu.</p>
+      {%- else %}
+      <h1>Tohle nešlo provést</h1>
+      <p class="lead">Zkuste se vrátit a&nbsp;akci zopakovat.</p>
+      {%- endif %}
+      <a class="btn btn-primary" href="{{ url_for('pages.home') }}">Na úvodní stránku</a>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,112 @@
+# The website on the deploy platform (DWM).
+#
+# DWM clones this repository, writes the stack's settings into an env file and
+# runs `docker compose up --build` (the stack must have "build" enabled). The
+# env file only fills in the ${…} below; a value reaches the containers only
+# when it is listed under `environment`. Caddy (DWM) routes the domain to the
+# service `web`, port 5000, and terminates TLS.
+#
+# Settings to enter in DWM: see docs/deploy.md, "Setting up the stack in DWM".
+
+x-app: &app
+  build:
+    context: .
+    args:
+      EVRIMA_VERSION: ${EVRIMA_VERSION:?EVRIMA_VERSION is required, e.g. 0.1.0}
+  image: mysite:${EVRIMA_VERSION}
+  environment:
+    EVRIMA_ENV: production
+    SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
+    DATABASE_URL: postgresql+psycopg://web:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/web
+    REDIS_URL: redis://redis:6379/0
+    SITE_HOSTS: ${SITE_HOSTS:?SITE_HOSTS is required, e.g. example.com}
+    TRUSTED_PROXIES: "1"
+    MAIL_BACKEND: smtp
+    SMTP_HOST: ${SMTP_HOST:?SMTP_HOST is required}
+    SMTP_PORT: ${SMTP_PORT:-587}
+    SMTP_SECURITY: ${SMTP_SECURITY:-starttls}
+    SMTP_USERNAME: ${SMTP_USERNAME:-}
+    SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+    MAIL_SENDER: ${MAIL_SENDER:?MAIL_SENDER is required}
+    CONTACT_RECIPIENT: ${CONTACT_RECIPIENT:?CONTACT_RECIPIENT is required}
+    TELEMETRY_ENDPOINT: ${TELEMETRY_ENDPOINT:-}
+    TELEMETRY_TOKEN: ${TELEMETRY_TOKEN:-}
+  volumes:
+    - media:/data/media
+  restart: unless-stopped
+  # The app needs no Linux capabilities (unprivileged user, port 5000) and must
+  # not gain any: limits what an exploit in, say, image decoding could do
+  # (security audit 2026-11-06).
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+
+services:
+  web:
+    <<: *app
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request, sys; sys.exit(urllib.request.urlopen('http://localhost:5000/health', timeout=3).status != 200)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+  # Database migrations, once per deploy, before the new version starts. If
+  # they fail, `web` does not start and the old containers keep running
+  # (docs/framework.md, "Distribution and deployment").
+  migrate:
+    <<: *app
+    command: ["flask", "evrima", "db", "upgrade"]
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Periodic jobs (the platform has no cron): telemetry shipping every minute,
+  # cleanup of unused uploads and old login records once a day.
+  jobs:
+    <<: *app
+    command: ["flask", "evrima", "jobs"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+
+  db:
+    image: postgres:17.5-alpine
+    environment:
+      POSTGRES_DB: web
+      POSTGRES_USER: web
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U web -d web"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Rate limits and the telemetry buffer. Append-only file on a volume, so
+  # buffered telemetry survives a restart.
+  redis:
+    image: redis:7.4.2-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  db:
+  redis:
+  media:

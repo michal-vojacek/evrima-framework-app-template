@@ -1,0 +1,4 @@
+# Local development: Evrima from the neighbouring checkout, editable, so a
+# change in the framework shows up here without a release.
+-e ../evrima-framework[test]
+-r requirements.txt

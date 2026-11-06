@@ -1,0 +1,33 @@
+{%- extends "base.html" -%}
+
+{% block meta %}
+<meta name="description" content="TODO: one or two sentences about the business, as people search for it.">
+{% endblock %}
+
+{#- schema.org data of the business. TODO: the real data; Organization / LocalBusiness / Person. -#}
+{% block structured_data %}
+{{ {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Název firmy",
+  "url": canonical_url(),
+  "telephone": "+420000000000",
+  "email": "mailto:info@example.com",
+  "address": {"@type": "PostalAddress", "streetAddress": "Ulice 1", "postalCode": "000 00",
+              "addressLocality": "Obec", "addressCountry": "CZ"},
+  "sameAs": []
+} | json_ld }}
+{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="wrap">
+      <h1>Titulek, který říká, co pro zákazníka uděláte</h1>
+      <p class="lead">Odstavec pod titulkem.</p>
+      <a class="btn btn-primary" href="#kontakt" data-track="cta-hero">Kontaktujte nás</a>
+    </div>
+  </section>
+
+  {%- set contact_page = "home" %}
+  {% include "_contact.html" %}
+{% endblock %}

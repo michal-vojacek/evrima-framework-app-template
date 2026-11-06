@@ -1,0 +1,60 @@
+/* Starting styles of the website. Replace with the website's own design system.
+   Rules: no inline styles in templates (strict CSP); fonts hosted here, never from
+   Google Fonts or another CDN; colours as tokens on :root. */
+
+:root {
+  --ink: #1f1f1f;
+  --text: #4d4d4d;
+  --line: #d9d9d6;
+  --tint: #f4f4f3;
+  --bg: #ffffff;
+  --accent: #1f4fb5;
+  --on-accent: #ffffff;
+  --error: #b3261e;
+  --radius: 8px;
+  --max: 1120px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.65 system-ui, sans-serif; }
+h1, h2, h3 { color: var(--ink); line-height: 1.2; margin: 0 0 16px; }
+a { color: var(--ink); text-underline-offset: 4px; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.skip { position: absolute; left: 16px; top: -48px; padding: 8px 16px; background: var(--bg); border: 1px solid var(--ink); }
+.skip:focus { top: 12px; }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+.section { padding: 64px 0; }
+.lead { font-size: 18px; max-width: 660px; }
+.prose { max-width: 760px; }
+
+.btn { display: inline-block; padding: 12px 20px; border-radius: var(--radius); border: 0; font: 600 16px/1.5 inherit; text-decoration: none; cursor: pointer; }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn[disabled] { opacity: 0.7; cursor: progress; }
+
+.site-header { border-bottom: 1px solid var(--line); padding: 12px 0; }
+.site-header .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.logo { font-weight: 700; text-decoration: none; }
+.site-footer { border-top: 1px solid var(--line); padding: 32px 0; font-size: 14px; }
+.site-footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+.contact { background: var(--tint); }
+.booking { display: grid; gap: 16px; max-width: 560px; }
+.field { display: grid; gap: 6px; }
+.field label, .field-pair legend { color: var(--ink); font-size: 14px; font-weight: 600; }
+.field input { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid #8c8c88; border-radius: var(--radius); background: var(--bg); }
+.field input[aria-invalid="true"] { border: 2px solid var(--error); }
+.field-pair { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+.field-pair legend { padding: 0; margin-bottom: 8px; }
+.field-pair .error { grid-column: 1 / -1; }
+.optional { font-weight: 400; color: var(--text); }
+.error { margin: 4px 0 0; color: var(--error); font-size: 14px; font-weight: 600; }
+.form-note, .fine { font-size: 14px; }
+.form-done, .form-alert { border-left: 3px solid var(--accent); padding-left: 16px; color: var(--ink); }
+.form-alert { border-color: var(--error); }
+.form-done-title { font-weight: 700; font-size: 20px; margin: 0 0 4px; }
+.placeholder, .evrima-legal-todo { background: #fff7e0; color: #6b4e00; padding: 0 4px; border-radius: 4px; }
+/* Legal pages from Evrima's skeletons (evrima.legal). */
+.evrima-legal { max-width: 760px; margin: 0 auto; padding: 64px 24px; }
+
+@media (max-width: 600px) { .field-pair { grid-template-columns: minmax(0, 1fr); } }

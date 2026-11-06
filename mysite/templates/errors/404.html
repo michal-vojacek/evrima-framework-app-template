@@ -1,0 +1,12 @@
+{%- extends "base.html" -%}
+{% block title %}Stránka nenalezena{% endblock %}
+{% block meta %}<meta name="robots" content="noindex">{% endblock %}
+{% block content %}
+  <section class="section">
+    <div class="wrap">
+      <h1>Tuhle stránku jsme nenašli</h1>
+      <p class="lead">Adresa se mohla změnit, nebo v&nbsp;ní je překlep.</p>
+      <a class="btn btn-primary" href="{{ url_for('pages.home') }}">Na úvodní stránku</a>
+    </div>
+  </section>
+{% endblock %}

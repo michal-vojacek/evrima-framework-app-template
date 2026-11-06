@@ -1,0 +1,18 @@
+# Only the application package and requirements.txt go into the image.
+.git
+.venv
+.env
+.env.*
+.idea
+.vscode
+.pytest_cache
+**/__pycache__
+*.sqlite3
+instance
+tests
+design
+docs
+src
+dist
+*.png
+!mysite/**/*.png

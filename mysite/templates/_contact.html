@@ -1,0 +1,70 @@
+{#- The contact section with the enquiry form (contact.py). Included, not imported, so it sees
+    the page's context: `enquiry` after a rejected form, the flashed thanks, and `contact_page`,
+    the page the form returns to (a key of contact.PAGES). A page that includes it:
+      {%- set contact_page = "home" %}{% include "_contact.html" %}
+    Protection: CSRF token, the honeypot, a rate limit (contact.py). -#}
+{%- set e = enquiry if enquiry is defined else none %}
+{%- set errors = e.errors if e else {} %}
+{%- set sent = get_flashed_messages(category_filter=["contact-sent"]) %}
+{%- macro error(errors, key, id, default="") -%}
+<p class="error" id="{{ id }}" data-msg="{{ default }}"{% if key not in errors %} hidden{% endif %}>{{ errors[key] if key in errors else default }}</p>
+{%- endmacro %}
+<section class="section contact" id="kontakt">
+  <div class="wrap">
+    <h2>Napište nám</h2>
+    {%- if sent %}
+    <div class="form-done" role="status">
+      <p class="form-done-title">Děkujeme, zpráva je odeslaná.</p>
+      <p>Ozveme se vám co nejdřív.</p>
+    </div>
+    {%- else %}
+    {#- The fragment brings a rejected form back into view. #}
+    <form class="booking" action="{{ url_for('contact.send', _anchor='kontakt') }}" method="post" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {{ honeypot("contact") }}
+      <input type="hidden" name="page" value="{{ contact_page }}">
+      {%- if "send" in errors %}
+      <div class="form-alert" role="alert">
+        <p>Zprávu se teď nepodařilo odeslat. Zkuste to prosím za chvíli znovu, nebo nám zavolejte.</p>
+      </div>
+      {%- endif %}
+      <div class="field">
+        <label for="f-name">Jméno</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" maxlength="200" required aria-describedby="e-name"
+               value="{{ e.name if e }}"{% if "name" in errors %} aria-invalid="true"{% endif %}>
+        {{ error(errors, "name", "e-name", "Napište prosím své jméno.") }}
+      </div>
+      <fieldset class="field-pair" aria-describedby="e-contact">
+        <legend>Jak se vám ozveme? <span class="optional">(stačí jedno)</span></legend>
+        <div class="field">
+          <label for="f-phone">Telefon</label>
+          <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" aria-describedby="e-phone"
+                 value="{{ e.phone if e }}"{% if "phone" in errors or "contact" in errors %} aria-invalid="true"{% endif %}>
+          {{ error(errors, "phone", "e-phone") }}
+        </div>
+        <div class="field">
+          <label for="f-email">E-mail</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" maxlength="254" aria-describedby="e-email"
+                 value="{{ e.email if e }}"{% if "email" in errors or "contact" in errors %} aria-invalid="true"{% endif %}>
+          {{ error(errors, "email", "e-email") }}
+        </div>
+        {{ error(errors, "contact", "e-contact", "Vyplňte prosím telefon, nebo e-mail.") }}
+      </fieldset>
+      <div class="field">
+        <label for="f-web">Adresa vašeho webu <span class="optional">(nepovinné)</span></label>
+        <input id="f-web" name="website" type="text" inputmode="url" maxlength="500" aria-describedby="e-website"
+               value="{{ e.website if e }}"{% if "website" in errors %} aria-invalid="true"{% endif %}>
+        {{ error(errors, "website", "e-website") }}
+      </div>
+      <div class="field">
+        <label for="f-time">Kdy se vám hodí <span class="optional">(nepovinné)</span></label>
+        <input id="f-time" name="time" type="text" maxlength="200" aria-describedby="e-time"
+               value="{{ e.time if e }}"{% if "time" in errors %} aria-invalid="true"{% endif %}>
+        {{ error(errors, "time", "e-time") }}
+      </div>
+      <button class="btn btn-primary" type="submit" data-busy="Odesílám…">Odeslat</button>
+      <p class="form-note">Údaje použijeme jen k&nbsp;odpovědi. <a href="{{ legal_url('privacy') }}">Zásady ochrany osobních údajů</a></p>
+    </form>
+    {%- endif %}
+  </div>
+</section>
